@@ -12,6 +12,9 @@
 .project
 .sourceMate
 .sourceMateMetadataSettings
+swiz-build-config.xml
+swiz-config.xml
+*.iml
 setEnv.sh
 
 Icon
