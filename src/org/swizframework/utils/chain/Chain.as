@@ -89,7 +89,7 @@ package org.swizframework.utils.chain
 		 */
 		public function addFunction( functionRef:Function, functionArgArray:Array = null, functionThisArg:* = null ):Chain
 		{
-			addStep( new FunctionChainStep( functionRef, functionArgArray, functionThisArg ) );
+			addStep( new AdvancedFunctionChainStep( functionRef, functionArgArray, functionThisArg ) );
 			return this;
 		}
 
