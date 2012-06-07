@@ -32,6 +32,9 @@ package org.swizframework.utils.chain
 		
 		public var steps:Array = [];
 		
+		public var stepsCompleted:int = 0;
+		public var stepsTotal:int = 0;
+
 		public function get currentStep():IChainStep
 		{
 			return IChainStep( steps[ position ] );
@@ -40,17 +43,17 @@ package org.swizframework.utils.chain
 		/**
 		 * Backing variable for <code>chain</code> getter/setter.
 		 */
-		protected var _chain:IChain;
+		protected var _chain:AbstractChain;
 		
 		/**
 		 *
 		 */
-		public function get chain():IChain
+		public function get chain():AbstractChain
 		{
 			return _chain;
 		}
 		
-		public function set chain( value:IChain ):void
+		public function set chain( value:AbstractChain ):void
 		{
 			_chain = value;
 		}
@@ -108,15 +111,34 @@ package org.swizframework.utils.chain
 		{
 			this.mode = mode;
 			this.stopOnError = stopOnError;
+			addEventListener( ChainEvent.LENGTH_CHANGED, returnValue_lengthChangedHandler )
 		}
 		
+		private function returnValue_lengthChangedHandler( event:ChainEvent ):void
+		{
+			if(event.data > 0)
+			{
+				stepsTotal += event.data as int;
+			}
+			else if(event.data < 0)
+			{
+				stepsCompleted += event.data as int;
+			}
+		}
+
+
 		/**
 		 *
 		 */
 		public function addStep( step:IChainStep ):IChain
 		{
-			step.chain = IChain( this );
+			var lenghtEvent:ChainEvent = new ChainEvent(ChainEvent.LENGTH_CHANGED);
+			lenghtEvent.data = 1;
+			dispatchEvent( lenghtEvent );
+
+			step.chain = AbstractChain( this );
 			steps.push( step );
+
 			return IChain( this );
 		}
 		
@@ -131,7 +153,7 @@ package org.swizframework.utils.chain
 		/**
 		 *
 		 */
-		public function start():void
+		public function start():AbstractChain
 		{
 			if( _isComplete )
 			{
@@ -140,6 +162,7 @@ package org.swizframework.utils.chain
 				position = -1;
 				proceed();
 			}
+			return this;
 		}
 		
 		public function stepComplete():void
@@ -203,7 +226,7 @@ package org.swizframework.utils.chain
 			if( !stopOnError )
 				proceed();
 			else
-				fail();
+				error();
 		}
 		
 		/**

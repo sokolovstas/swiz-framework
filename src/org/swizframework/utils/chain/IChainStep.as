@@ -18,8 +18,8 @@ package org.swizframework.utils.chain
 {
 	public interface IChainStep
 	{
-		function get chain():IChain;
-		function set chain( value:IChain ):void;
+		function get chain():AbstractChain;
+		function set chain( value:AbstractChain ):void;
 		
 		function get isComplete():Boolean;
 		

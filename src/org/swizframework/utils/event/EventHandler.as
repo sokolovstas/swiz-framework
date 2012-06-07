@@ -30,7 +30,8 @@ package org.swizframework.utils.event
 	import org.swizframework.utils.async.AsyncTokenOperation;
 	import org.swizframework.utils.async.IAsynchronousEvent;
 	import org.swizframework.utils.async.IAsynchronousOperation;
-	
+	import org.swizframework.utils.chain.IChain;
+
 	/**
 	 * Represents a deferred request for mediation.
 	 */
@@ -153,6 +154,8 @@ package org.swizframework.utils.event
 					IAsynchronousEvent( event ).step.addAsynchronousOperation( result as IAsynchronousOperation );
 				else if( result is AsyncToken )
 					IAsynchronousEvent( event ).step.addAsynchronousOperation( new AsyncTokenOperation( result as AsyncToken ) );
+				else if ( result is IChain )
+					IAsynchronousEvent( event ).step.addChainOperation( result as IChain );
 			}
 			
 			if( metadataTag.stopPropagation )

@@ -26,9 +26,21 @@ package org.swizframework.events
 		public static const CHAIN_COMPLETE			:String = "chainComplete";
 		public static const CHAIN_FAIL				:String = "chainFail";
 		
+		public static const LENGTH_CHANGED:String = "lengthChanged";
+
+		public var data:Object;
+
+
 		public function ChainEvent( type:String, bubbles:Boolean = false, cancelable:Boolean = false )
 		{
 			super( type, bubbles, cancelable );
 		}
+		override public function clone():Event
+		{
+			var event:ChainEvent = new ChainEvent( type, bubbles, cancelable );
+			event.data = data;
+			return event;
+		}
+
 	}
 }

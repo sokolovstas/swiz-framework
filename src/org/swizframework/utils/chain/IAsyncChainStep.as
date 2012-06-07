@@ -24,5 +24,7 @@ package org.swizframework.utils.chain
 		 * Add a pending asynchronous operation to this chain step.
 		 */
 		function addAsynchronousOperation( operation:IAsynchronousOperation ):void;
+
+		function addChainOperation( operation:IChain ):void
 	}
 }

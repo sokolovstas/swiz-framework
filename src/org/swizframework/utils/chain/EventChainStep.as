@@ -18,7 +18,10 @@ package org.swizframework.utils.chain
 {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	
+	import flash.utils.setTimeout;
+
+	import org.swizframework.events.ChainEvent;
+
 	import org.swizframework.utils.async.IAsynchronousEvent;
 	import org.swizframework.utils.async.IAsynchronousOperation;
 	import org.swizframework.utils.services.SwizResponder;
@@ -139,9 +142,33 @@ package org.swizframework.utils.chain
 		{
 			operation.addResponder( new SwizResponder( resultHandler, faultHandler ) );
 			
+			var lenghtEvent:ChainEvent = new ChainEvent(ChainEvent.LENGTH_CHANGED);
+			lenghtEvent.data = 1;
+			chain.dispatchEvent( lenghtEvent );
+
 			_pendingCount++;
 		}
 		
+		public function addChainOperation( operation:IChain ):void
+		{
+			_pendingCount++;
+			operation.addEventListener( ChainEvent.LENGTH_CHANGED, returnValue_lengthChangedHandler )
+			operation.addEventListener( ChainEvent.CHAIN_COMPLETE, resultHandler );
+			operation.addEventListener( ChainEvent.CHAIN_FAIL, faultHandler );
+			setTimeout(operation.start, 100);
+
+			var lenghtEvent:ChainEvent = new ChainEvent(ChainEvent.LENGTH_CHANGED);
+			lenghtEvent.data = (operation as AbstractChain).stepsTotal;
+			chain.dispatchEvent( lenghtEvent );
+		}
+
+		private function returnValue_lengthChangedHandler( event:ChainEvent ):void
+		{
+			chain.dispatchEvent( event );
+		}
+
+
+
 		// ========================================
 		// public methods
 		// ========================================
@@ -151,6 +178,10 @@ package org.swizframework.utils.chain
 		 */
 		protected function resultHandler( data:Object ):void
 		{
+			var lenghtEvent:ChainEvent = new ChainEvent(ChainEvent.LENGTH_CHANGED);
+			lenghtEvent.data = -1;
+			chain.dispatchEvent( lenghtEvent );
+
 			if ( _pendingCount > 0 )
 				_pendingCount--;
 		
@@ -166,6 +197,10 @@ package org.swizframework.utils.chain
 		 */
 		protected function faultHandler( info:Object ):void
 		{
+			var lenghtEvent:ChainEvent = new ChainEvent(ChainEvent.LENGTH_CHANGED);
+			lenghtEvent.data = -1;
+			chain.dispatchEvent( lenghtEvent );
+
 			if ( _pendingCount > 0 )
 				_pendingCount--;
 			
