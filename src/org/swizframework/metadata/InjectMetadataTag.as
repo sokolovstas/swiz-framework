@@ -56,6 +56,11 @@ package org.swizframework.metadata
 		 */
 		protected var _required:Boolean = true;
 		
+		/**
+		 * Backing variable for read-only <code>constructorArguments</code> property.
+		 */
+		protected var _constructorArguments:String;
+
 		// ========================================
 		// public properties
 		// ========================================
@@ -118,6 +123,13 @@ package org.swizframework.metadata
 			return _required;
 		}
 		
+
+		public function get constructorArguments():String
+		{
+			return _constructorArguments;
+		}
+
+
 		// ========================================
 		// constructor
 		// ========================================
@@ -169,6 +181,9 @@ package org.swizframework.metadata
 			
 			if( hasArg( "required" ) )
 				_required = getArg( "required" ).value == "true";
+
+			if ( hasArg( "constructorArguments" ) )
+				_constructorArguments = getArg( "constructorArguments" ).value;
 		}
 	}
 }

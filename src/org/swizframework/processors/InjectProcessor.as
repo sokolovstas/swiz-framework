@@ -24,11 +24,13 @@ package org.swizframework.processors
 	
 	import org.swizframework.core.Bean;
 	import org.swizframework.core.ISwizAware;
+	import org.swizframework.core.Prototype;
 	import org.swizframework.metadata.InjectMetadataTag;
 	import org.swizframework.reflection.IMetadataTag;
 	import org.swizframework.reflection.MetadataHostClass;
 	import org.swizframework.reflection.MetadataHostMethod;
 	import org.swizframework.reflection.MethodParameter;
+	import org.swizframework.utils.logging.SwizLogEventLevel;
 	import org.swizframework.utils.logging.SwizLogger;
 	import org.swizframework.utils.services.IServiceHelper;
 	import org.swizframework.utils.services.IURLRequestHelper;
@@ -120,6 +122,8 @@ package org.swizframework.processors
 					// bail
 					return;
 				}
+
+				setUpPrototypeBeanConstructorArgument( namedBean, injectTag, bean );
 				
 				// this is a view added to the display list or a new bean being processed
 				var destObject:Object = ( injectTag.destination == null ) ? bean.source : getDestinationObject( bean.source, injectTag.destination );
@@ -244,6 +248,8 @@ package org.swizframework.processors
 			}
 			var typedBean:Bean = getBeanByType( targetType );
 			
+			setUpPrototypeBeanConstructorArgument( typedBean, injectTag, bean );
+
 			if( typedBean )
 			{
 				setDestinationValue( injectTag, bean, typedBean.source );
@@ -404,6 +410,35 @@ package org.swizframework.processors
 				cw.unwatch();
 			}
 			delete injectByProperty[ uid ];
+		}
+
+
+		protected function setUpPrototypeBeanConstructorArgument( bean:Bean, injectTag:InjectMetadataTag, parentBean:Bean ):void
+		{
+			// Set constructor argument for prototype injection from current bean
+			if ( bean is Prototype && injectTag.constructorArguments && injectTag.constructorArguments != "" )
+			{
+				Prototype( bean ).constructorArguments = new Array();
+				for each( var constructorProperty:String in injectTag.constructorArguments.split( "," ) )
+				{
+					if ( constructorProperty == "this" )
+					{
+						Prototype( bean ).constructorArguments.push( parentBean.source );
+					}
+					else
+					{
+						try
+						{
+							Prototype( bean ).constructorArguments.push( parentBean.source[constructorProperty] );
+						}
+						catch ( error:Error )
+						{
+							logger.log( SwizLogEventLevel.FATAL, "Property " + constructorProperty + " not found in Bean:" + parentBean.source );
+							throw new Error( "Property " + constructorProperty + " not found in Bean:" + parentBean.source );
+						}
+					}
+				}
+			}
 		}
 	}
 }
