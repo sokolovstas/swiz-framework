@@ -291,13 +291,8 @@ package org.swizframework.core
 			
 			for each( var bean:Bean in beans )
 			{
-				if( bean.typeDescriptor.satisfiesType( beanTypeName ) )
+				if( bean.typeDescriptor.className == beanTypeName )
 				{
-					if( foundBean != null )
-					{
-						throw new Error( "AmbiguousReferenceError. More than one bean was found with type: " + beanType );
-					}
-					
 					foundBean = bean;
 				}
 			}
