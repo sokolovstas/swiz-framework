@@ -47,6 +47,7 @@ package org.swizframework.utils.async
 		override protected function addEventListeners( dispatcher:IEventDispatcher ):void
 		{
 			dispatcher.addEventListener(Event.CANCEL, failHandler);
+			dispatcher.addEventListener(Event.SELECT, completeHandler);
 			dispatcher.addEventListener(Event.COMPLETE, completeHandler);
 			dispatcher.addEventListener(IOErrorEvent.IO_ERROR, failHandler);
 			dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, failHandler);
@@ -58,6 +59,7 @@ package org.swizframework.utils.async
 		override protected function removeEventListeners( dispatcher:IEventDispatcher ):void
 		{
 			dispatcher.removeEventListener(Event.CANCEL, failHandler);
+			dispatcher.removeEventListener(Event.SELECT, completeHandler);
 			dispatcher.removeEventListener(Event.COMPLETE, completeHandler);
 			dispatcher.removeEventListener(IOErrorEvent.IO_ERROR, failHandler);
 			dispatcher.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, failHandler);			
