@@ -114,6 +114,15 @@ package org.swizframework.utils.chain
 			return this;
 		}
 
+		/**
+		 * Add an error step to stop chain.
+		 */
+		public function addStop():Chain
+		{
+			addStep( new StopChainStep() );
+			return this;
+		}
+
 
 		/**
 		 * @inheritDoc
