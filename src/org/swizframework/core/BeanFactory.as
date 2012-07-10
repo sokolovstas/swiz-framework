@@ -421,6 +421,8 @@ package org.swizframework.core
 		 */
 		protected function handleBeanEvent( event:BeanEvent ):void
 		{
+			event.stopImmediatePropagation();
+
 			var existingBean:Bean = getBeanForSource( event.source );
 			
 			switch( event.type )
