@@ -142,10 +142,7 @@ package org.swizframework.utils.chain
 			{
 				faultHandler();
 			}
-			else
-			{
-				fail();
-			}
+			super.error();
 		}
 	}
 }
